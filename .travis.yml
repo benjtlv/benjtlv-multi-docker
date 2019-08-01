@@ -19,3 +19,16 @@ after_success:
   - docker push benjtlv/multi-nginx
   - docker push benjtlv/multi-server
   - docker push benjtlv/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: multi-docker
+  bucket_name: elasticbeanstalk-us-east-1-664889048139
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id:
+    secure: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
