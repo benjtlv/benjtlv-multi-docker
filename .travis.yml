@@ -1,0 +1,21 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t benjtlb/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run CI=true benjtlv/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t benjtlv/multi-client ./client
+  - docker build -t benjtlv/multi-nginx ./nginx
+  - docker build -t benjtlv/multi-server ./server
+  - docker build -t benjtlv/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push benjtlv/multi-client
+  - docker push benjtlv/multi-nginx
+  - docker push benjtlv/multi-server
+  - docker push benjtlv/multi-worker
